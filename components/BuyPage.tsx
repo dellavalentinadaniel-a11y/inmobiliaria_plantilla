@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PropertyCard } from './PropertyCard';
-import { MOCK_PROPERTIES } from '../services/mockData';
+import { getProperties } from '../services/dataService';
 import { Property } from '../types';
 import { Search, MapPin, Filter, X, ChevronDown, ChevronUp, Bed, Bath, Move, Map as MapIcon, List as ListIcon } from 'lucide-react';
 import ReactDOMServer from 'react-dom/server';
@@ -10,10 +10,23 @@ interface BuyPageProps {
 }
 
 export const BuyPage: React.FC<BuyPageProps> = ({ onPropertyClick }) => {
-  // Initialize with all Sale properties
-  const [properties, setProperties] = useState<Property[]>(
-    MOCK_PROPERTIES.filter(p => p.operation === 'Sale')
-  );
+  const [allProperties, setAllProperties] = useState<Property[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProps = async () => {
+      try {
+        const data = await getProperties();
+        const saleProps = data.filter(p => p.operation === 'Sale');
+        setAllProperties(saleProps);
+        setProperties(saleProps);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProps();
+  }, []);
 
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const mapRef = useRef<any>(null);
@@ -31,7 +44,7 @@ export const BuyPage: React.FC<BuyPageProps> = ({ onPropertyClick }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const handleFilter = () => {
-    let result = MOCK_PROPERTIES.filter(p => p.operation === 'Sale');
+    let result = allProperties;
 
     // Basic Filters
     if (location.trim()) {
@@ -85,7 +98,7 @@ export const BuyPage: React.FC<BuyPageProps> = ({ onPropertyClick }) => {
     setBeds('');
     setBaths('');
     setMinSqft('');
-    setProperties(MOCK_PROPERTIES.filter(p => p.operation === 'Sale'));
+    setProperties(allProperties);
   };
 
   // Initialize Map

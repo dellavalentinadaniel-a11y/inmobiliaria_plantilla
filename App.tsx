@@ -12,13 +12,29 @@ import { AgentsPage } from './components/AgentsPage';
 import { OfficesPage } from './components/OfficesPage';
 import { BlogPage } from './components/BlogPage';
 import { MOCK_PROPERTIES } from './services/mockData';
+import { getProperties } from './services/dataService';
 import { Property, Development, FilterState } from './types';
 import { MapPin, ArrowRight, Instagram, Facebook, Twitter, Linkedin } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<'home' | 'property' | 'login' | 'buy' | 'rent' | 'developments' | 'agents' | 'offices' | 'blog'>('home');
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>(MOCK_PROPERTIES);
+  const [allProperties, setAllProperties] = useState<Property[]>([]);
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const props = await getProperties();
+        setAllProperties(props);
+        setFilteredProperties(props);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInitialData();
+  }, []);
 
   const handlePropertyClick = (property: Property) => {
     setSelectedProperty(property);
@@ -102,7 +118,7 @@ const App: React.FC = () => {
   };
 
   const handleSearch = (filters: Partial<FilterState>) => {
-    let result = MOCK_PROPERTIES;
+    let result = allProperties;
 
     if (filters.operation) {
       result = result.filter(p => p.operation === filters.operation);
@@ -121,6 +137,10 @@ const App: React.FC = () => {
     if (listingsElement) {
       listingsElement.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const resetFilters = () => {
+    setFilteredProperties(allProperties);
   };
 
   return (
@@ -179,7 +199,7 @@ const App: React.FC = () => {
                   <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-gray-900 mb-2">No encontramos propiedades</h3>
                   <p className="text-gray-500">Intenta ajustar tu búsqueda con otros términos.</p>
-                  <button onClick={() => setFilteredProperties(MOCK_PROPERTIES)} className="mt-4 text-blue-900 font-bold hover:underline">
+                  <button onClick={resetFilters} className="mt-4 text-blue-900 font-bold hover:underline">
                     Ver todo el catálogo
                   </button>
                 </div>

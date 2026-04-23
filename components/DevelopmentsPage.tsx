@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DevelopmentCard } from './DevelopmentCard';
-import { MOCK_DEVELOPMENTS } from '../services/mockData';
+import { getDevelopments } from '../services/dataService';
 import { Development, Property } from '../types';
 import { Search, MapPin, Filter, X, ChevronDown, ChevronUp, Map as MapIcon, List as ListIcon, HardHat } from 'lucide-react';
 
@@ -9,7 +9,22 @@ interface DevelopmentsPageProps {
 }
 
 export const DevelopmentsPage: React.FC<DevelopmentsPageProps> = ({ onDevelopmentClick }) => {
-  const [developments, setDevelopments] = useState<Development[]>(MOCK_DEVELOPMENTS);
+  const [allDevelopments, setAllDevelopments] = useState<Development[]>([]);
+  const [developments, setDevelopments] = useState<Development[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDevs = async () => {
+      try {
+        const data = await getDevelopments();
+        setAllDevelopments(data);
+        setDevelopments(data);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDevs();
+  }, []);
 
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const mapRef = useRef<any>(null);
@@ -22,7 +37,7 @@ export const DevelopmentsPage: React.FC<DevelopmentsPageProps> = ({ onDevelopmen
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const handleFilter = () => {
-    let result = MOCK_DEVELOPMENTS;
+    let result = allDevelopments;
 
     if (location.trim()) {
       const loc = location.toLowerCase();
@@ -50,7 +65,7 @@ export const DevelopmentsPage: React.FC<DevelopmentsPageProps> = ({ onDevelopmen
     setLocation('');
     setStatus('');
     setMaxPrice('');
-    setDevelopments(MOCK_DEVELOPMENTS);
+    setDevelopments(allDevelopments);
   };
 
   // Initialize Map

@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
-import { MOCK_AGENTS } from '../services/mockData';
+import React, { useState, useEffect } from 'react';
+import { getAgents } from '../services/dataService';
+import { Agent } from '../types';
 import { Search, MapPin, Mail, Phone, User } from 'lucide-react';
 
 export const AgentsPage: React.FC = () => {
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const filteredAgents = MOCK_AGENTS.filter(agent => 
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const data = await getAgents();
+        setAgents(data);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAgents();
+  }, []);
+
+  const filteredAgents = agents.filter(agent => 
     agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     agent.location.toLowerCase().includes(searchTerm.toLowerCase())
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PropertyCard } from './PropertyCard';
-import { MOCK_PROPERTIES } from '../services/mockData';
+import { getProperties } from '../services/dataService';
 import { Property } from '../types';
 import { Search, MapPin, Filter, X, ChevronDown, ChevronUp, Bed, Bath, Move, Map as MapIcon, List as ListIcon } from 'lucide-react';
 
@@ -9,10 +9,23 @@ interface RentPageProps {
 }
 
 export const RentPage: React.FC<RentPageProps> = ({ onPropertyClick }) => {
-  // Initialize with all Rent properties
-  const [properties, setProperties] = useState<Property[]>(
-    MOCK_PROPERTIES.filter(p => p.operation === 'Rent')
-  );
+  const [allProperties, setAllProperties] = useState<Property[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProps = async () => {
+      try {
+        const data = await getProperties();
+        const rentProps = data.filter(p => p.operation === 'Rent');
+        setAllProperties(rentProps);
+        setProperties(rentProps);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProps();
+  }, []);
 
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const mapRef = useRef<any>(null);
@@ -30,7 +43,7 @@ export const RentPage: React.FC<RentPageProps> = ({ onPropertyClick }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const handleFilter = () => {
-    let result = MOCK_PROPERTIES.filter(p => p.operation === 'Rent');
+    let result = allProperties;
 
     // Basic Filters
     if (location.trim()) {
@@ -84,7 +97,7 @@ export const RentPage: React.FC<RentPageProps> = ({ onPropertyClick }) => {
     setBeds('');
     setBaths('');
     setMinSqft('');
-    setProperties(MOCK_PROPERTIES.filter(p => p.operation === 'Rent'));
+    setProperties(allProperties);
   };
 
   // Initialize Map

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Database } from 'lucide-react';
+import { seedDatabase } from '../services/seedService';
 
 interface LoginProps {
   onLoginSuccess: () => void;
@@ -10,6 +11,14 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [seedResult, setSeedResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  const handleSeedData = async () => {
+    setIsLoading(true);
+    const result = await seedDatabase();
+    setSeedResult(result);
+    setIsLoading(false);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,6 +175,23 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           <div className="mt-8 text-center text-sm text-gray-600">
             ¿No tenés una cuenta?{' '}
             <a href="#" className="font-bold text-blue-900 hover:text-blue-700">Registrate gratis</a>
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-gray-100">
+            <p className="text-xs text-center text-gray-400 mb-4 uppercase font-bold tracking-widest">Configuración de Desarrollador</p>
+            <button
+              onClick={handleSeedData}
+              disabled={isLoading}
+              className="w-full flex justify-center items-center bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold py-2 px-4 rounded-lg transition-colors text-sm"
+            >
+              <Database className="w-4 h-4 mr-2" />
+              Poblar Base de Datos con Mock Data
+            </button>
+            {seedResult && (
+              <p className={`text-center mt-2 text-xs font-medium ${seedResult.success ? 'text-green-600' : 'text-red-500'}`}>
+                {seedResult.message}
+              </p>
+            )}
           </div>
         </div>
       </div>

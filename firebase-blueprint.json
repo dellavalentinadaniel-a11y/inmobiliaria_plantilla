@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "Property": {
+      "title": "Property",
+      "description": "Real estate property for sale or rent",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "price": { "type": "number" },
+        "currency": { "type": "string", "enum": ["USD", "ARS"] },
+        "type": { "type": "string", "enum": ["House", "Apartment", "Condo", "Land"] },
+        "operation": { "type": "string", "enum": ["Sale", "Rent"] },
+        "location": { "type": "string" },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "beds": { "type": "number" },
+        "baths": { "type": "number" },
+        "sqft": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "description": { "type": "string" },
+        "features": { "type": "array", "items": { "type": "string" } },
+        "agent": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "photo": { "type": "string" },
+            "phone": { "type": "string" }
+          }
+        }
+      },
+      "required": ["title", "price", "currency", "type", "operation", "location"]
+    },
+    "Development": {
+      "title": "Development",
+      "description": "Real estate development project",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "priceFrom": { "type": "number" },
+        "currency": { "type": "string", "enum": ["USD", "ARS"] },
+        "location": { "type": "string" },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "status": { "type": "string", "enum": ["Pre-sale", "In Construction", "Ready"] },
+        "deliveryDate": { "type": "string" },
+        "unitsAvailable": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "description": { "type": "string" },
+        "features": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "Agent": {
+      "title": "Agent",
+      "description": "Real estate agent",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "photo": { "type": "string" },
+        "location": { "type": "string" },
+        "listingsCount": { "type": "number" }
+      }
+    },
+    "BlogPost": {
+      "title": "BlogPost",
+      "description": "Blog post about real estate",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "content": { "type": "string" },
+        "author": { "type": "string" },
+        "date": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "category": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/properties/{propertyId}": {
+      "schema": "Property",
+      "description": "Collection of properties"
+    },
+    "/developments/{devId}": {
+      "schema": "Development",
+      "description": "Collection of developments"
+    },
+    "/agents/{agentId}": {
+      "schema": "Agent",
+      "description": "Collection of agents"
+    },
+    "/blogPosts/{postId}": {
+      "schema": "BlogPost",
+      "description": "Collection of blog posts"
+    }
+  }
+}
