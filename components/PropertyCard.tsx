@@ -51,7 +51,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick })
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden">
         <img 
-          src={property.imageUrl} 
+          src={property.imageUrl || 'https://via.placeholder.com/800x600'} 
           alt={property.title} 
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
         />
@@ -105,7 +105,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick })
         {/* Agent Info */}
         <div className="flex items-center mt-auto">
           <img 
-            src={property.agent.photo} 
+            src={property.agent.photo || 'https://via.placeholder.com/40'} 
             alt={property.agent.name} 
             className="w-10 h-10 rounded-full border-2 border-white shadow-sm mr-3"
           />

@@ -17,7 +17,7 @@ export const RentPage: React.FC<RentPageProps> = ({ onPropertyClick }) => {
     const fetchProps = async () => {
       try {
         const data = await getProperties();
-        const rentProps = data.filter(p => p.operation === 'Rent');
+        const rentProps = data.filter(p => p.operation === 'Rent' && p.status === 'available');
         setAllProperties(rentProps);
         setProperties(rentProps);
       } finally {

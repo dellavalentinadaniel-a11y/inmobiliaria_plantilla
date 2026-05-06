@@ -18,7 +18,7 @@ export const BuyPage: React.FC<BuyPageProps> = ({ onPropertyClick }) => {
     const fetchProps = async () => {
       try {
         const data = await getProperties();
-        const saleProps = data.filter(p => p.operation === 'Sale');
+        const saleProps = data.filter(p => p.operation === 'Sale' && p.status === 'available');
         setAllProperties(saleProps);
         setProperties(saleProps);
       } finally {

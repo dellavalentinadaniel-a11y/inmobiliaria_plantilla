@@ -22,6 +22,7 @@ export interface Property {
     photo: string;
     phone: string;
   };
+  status: 'available' | 'sold' | 'rented';
 }
 
 export interface Development {

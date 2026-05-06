@@ -5,25 +5,37 @@ import { PropertyCard } from './components/PropertyCard';
 import { PropertyDetail } from './components/PropertyDetail';
 import { ChatWidget } from './components/ChatWidget';
 import { Login } from './components/Login';
+import { AgentDashboard } from './components/AgentDashboard';
 import { BuyPage } from './components/BuyPage';
 import { RentPage } from './components/RentPage';
-import { DevelopmentsPage } from './components/DevelopmentsPage';
+import { AboutUs } from './components/AboutUs';
 import { AgentsPage } from './components/AgentsPage';
-import { OfficesPage } from './components/OfficesPage';
 import { BlogPage } from './components/BlogPage';
 import { MOCK_PROPERTIES } from './services/mockData';
 import { getProperties } from './services/dataService';
-import { Property, Development, FilterState } from './types';
+import { Property, FilterState, Development } from './types';
 import { MapPin, ArrowRight, Instagram, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { initFirebase, auth } from './services/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'property' | 'login' | 'buy' | 'rent' | 'developments' | 'agents' | 'offices' | 'blog'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'property' | 'login' | 'buy' | 'rent' | 'about' | 'agents' | 'blog' | 'agent-dashboard'>('home');
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    initFirebase();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+      if (!user) {
+        // If user logged out forcefully, return to home
+        setCurrentView('home'); 
+      }
+    });
+
     const fetchInitialData = async () => {
       try {
         const props = await getProperties();
@@ -34,6 +46,8 @@ const App: React.FC = () => {
       }
     };
     fetchInitialData();
+    
+    return () => unsubscribe();
   }, []);
 
   const handlePropertyClick = (property: Property) => {
@@ -92,18 +106,13 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   };
 
-  const handleNavigateDevelopments = () => {
-    setCurrentView('developments');
+  const handleNavigateAbout = () => {
+    setCurrentView('about');
     window.scrollTo(0, 0);
   };
 
   const handleNavigateAgents = () => {
     setCurrentView('agents');
-    window.scrollTo(0, 0);
-  };
-
-  const handleNavigateOffices = () => {
-    setCurrentView('offices');
     window.scrollTo(0, 0);
   };
 
@@ -113,7 +122,7 @@ const App: React.FC = () => {
   };
 
   const handleLoginSuccess = () => {
-    setCurrentView('home');
+    setCurrentView('agent-dashboard');
     window.scrollTo(0, 0);
   };
 
@@ -150,9 +159,8 @@ const App: React.FC = () => {
         onNavigateLogin={handleNavigateLogin} 
         onNavigateBuy={handleNavigateBuy}
         onNavigateRent={handleNavigateRent}
-        onNavigateDevelopments={handleNavigateDevelopments}
+        onNavigateAbout={handleNavigateAbout}
         onNavigateAgents={handleNavigateAgents}
-        onNavigateOffices={handleNavigateOffices}
         onNavigateBlog={handleNavigateBlog}
       />
 
@@ -247,6 +255,10 @@ const App: React.FC = () => {
           <Login onLoginSuccess={handleLoginSuccess} />
         )}
 
+        {currentView === 'agent-dashboard' && (
+          <AgentDashboard />
+        )}
+
         {currentView === 'buy' && (
           <BuyPage onPropertyClick={handlePropertyClick} />
         )}
@@ -255,16 +267,12 @@ const App: React.FC = () => {
           <RentPage onPropertyClick={handlePropertyClick} />
         )}
 
-        {currentView === 'developments' && (
-          <DevelopmentsPage onDevelopmentClick={handleDevelopmentClick} />
+        {currentView === 'about' && (
+          <AboutUs />
         )}
 
         {currentView === 'agents' && (
           <AgentsPage />
-        )}
-
-        {currentView === 'offices' && (
-          <OfficesPage />
         )}
 
         {currentView === 'blog' && (
@@ -291,7 +299,7 @@ const App: React.FC = () => {
               <ul className="space-y-3 text-gray-400 text-sm">
                 <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavigateBuy(); }} className="hover:text-white transition-colors">Casas en Venta</a></li>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavigateRent(); }} className="hover:text-white transition-colors">Departamentos en Alquiler</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavigateDevelopments(); }} className="hover:text-white transition-colors">Emprendimientos</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavigateAbout(); }} className="hover:text-white transition-colors">Nosotros</a></li>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavigateAgents(); }} className="hover:text-white transition-colors">Agentes Destacados</a></li>
               </ul>
             </div>
@@ -299,8 +307,7 @@ const App: React.FC = () => {
             <div>
               <h4 className="font-bold text-lg mb-6">La Empresa</h4>
               <ul className="space-y-3 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Sobre Nosotros</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavigateOffices(); }} className="hover:text-white transition-colors">Oficinas</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavigateAbout(); }} className="hover:text-white transition-colors">Sobre Nosotros</a></li>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavigateBlog(); }} className="hover:text-white transition-colors">Novedades</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Trabajá con nosotros</a></li>
               </ul>

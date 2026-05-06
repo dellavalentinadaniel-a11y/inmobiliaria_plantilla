@@ -6,9 +6,8 @@ interface HeaderProps {
   onNavigateLogin: () => void;
   onNavigateBuy: () => void;
   onNavigateRent: () => void;
-  onNavigateDevelopments: () => void;
+  onNavigateAbout: () => void;
   onNavigateAgents: () => void;
-  onNavigateOffices: () => void;
   onNavigateBlog: () => void;
 }
 
@@ -17,9 +16,8 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateLogin, 
   onNavigateBuy, 
   onNavigateRent, 
-  onNavigateDevelopments,
+  onNavigateAbout,
   onNavigateAgents,
-  onNavigateOffices,
   onNavigateBlog
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -54,10 +52,10 @@ export const Header: React.FC<HeaderProps> = ({
             </a>
             <a 
               href="#" 
-              onClick={(e) => { e.preventDefault(); onNavigateDevelopments(); }}
+              onClick={(e) => { e.preventDefault(); onNavigateAbout(); }} 
               className="hover:text-blue-700 transition-colors"
             >
-              EMPRENDIMIENTOS
+              NOSOTROS
             </a>
             <a 
               href="#" 
@@ -65,13 +63,6 @@ export const Header: React.FC<HeaderProps> = ({
               className="hover:text-blue-700 transition-colors"
             >
               AGENTES
-            </a>
-            <a 
-              href="#" 
-              onClick={(e) => { e.preventDefault(); onNavigateOffices(); }}
-              className="hover:text-blue-700 transition-colors"
-            >
-              OFICINAS
             </a>
             <a 
               href="#" 
@@ -126,10 +117,10 @@ export const Header: React.FC<HeaderProps> = ({
             </a>
             <a 
                href="#" 
-               onClick={() => { onNavigateDevelopments(); setIsMenuOpen(false); }} 
+               onClick={() => { onNavigateAbout(); setIsMenuOpen(false); }} 
                className="block hover:text-blue-700"
             >
-               Emprendimientos
+               Nosotros
             </a>
             <a 
                href="#" 
@@ -137,13 +128,6 @@ export const Header: React.FC<HeaderProps> = ({
                className="block hover:text-blue-700"
             >
                Agentes
-            </a>
-            <a 
-               href="#" 
-               onClick={() => { onNavigateOffices(); setIsMenuOpen(false); }} 
-               className="block hover:text-blue-700"
-            >
-               Oficinas
             </a>
              <a 
                href="#" 

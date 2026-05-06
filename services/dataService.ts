@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, limit, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { MOCK_PROPERTIES, MOCK_DEVELOPMENTS, MOCK_AGENTS, MOCK_OFFICES, MOCK_BLOG_POSTS } from './mockData';
 import { Property, Development, Agent, Office, BlogPost } from '../types';
@@ -61,4 +61,42 @@ export const getBlogPosts = async (): Promise<BlogPost[]> => {
 export const getOffices = async (): Promise<Office[]> => {
   if (!USE_FIRESTORE || !db) return MOCK_OFFICES;
   return MOCK_OFFICES; // Offices might remain static or moved to DB later
+};
+
+export const addProperty = async (property: Omit<Property, 'id'>): Promise<Property | null> => {
+  if (USE_FIRESTORE && db) {
+    try {
+      const docRef = await addDoc(collection(db, 'properties'), property);
+      return { id: docRef.id, ...property };
+    } catch (error) {
+      console.error('Error adding property to Firestore:', error);
+      return null;
+    }
+  } else {
+    // For mock data
+    const newProperty = { id: Date.now().toString(), ...property, status: 'available' as const };
+    MOCK_PROPERTIES.push(newProperty);
+    return newProperty;
+  }
+};
+
+export const updateProperty = async (propertyId: string, updates: Partial<Property>): Promise<boolean> => {
+  if (USE_FIRESTORE && db) {
+    try {
+      const docRef = doc(collection(db, 'properties'), propertyId);
+      await updateDoc(docRef, updates);
+      return true;
+    } catch (error) {
+      console.error('Error updating property in Firestore:', error);
+      return false;
+    }
+  } else {
+    // For mock data
+    const propertyIndex = MOCK_PROPERTIES.findIndex(p => p.id === propertyId);
+    if (propertyIndex !== -1) {
+      MOCK_PROPERTIES[propertyIndex] = { ...MOCK_PROPERTIES[propertyIndex], ...updates };
+      return true;
+    }
+    return false;
+  }
 };

@@ -51,7 +51,7 @@ export const PropertyDetail: React.FC<PropertyDetailProps> = ({ property, onBack
               {/* Main Image Stage */}
               <div className="relative rounded-xl overflow-hidden shadow-lg h-[400px] md:h-[500px] bg-gray-200 group">
                 <img 
-                  src={galleryImages[currentImageIndex]} 
+                  src={galleryImages[currentImageIndex] || 'https://via.placeholder.com/800x600'} 
                   alt={`${property.title} - View ${currentImageIndex + 1}`} 
                   className="w-full h-full object-cover transition-opacity duration-300"
                 />
@@ -109,7 +109,14 @@ export const PropertyDetail: React.FC<PropertyDetailProps> = ({ property, onBack
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{property.title}</h1>
               <div className="flex items-center text-gray-600 text-lg">
                 <MapPin className="w-5 h-5 mr-2 text-red-600" />
-                {property.location}
+                <a 
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.location)}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-blue-900 hover:underline transition-colors"
+                >
+                  {property.location}
+                </a>
               </div>
             </div>
 
@@ -179,7 +186,7 @@ export const PropertyDetail: React.FC<PropertyDetailProps> = ({ property, onBack
                 <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-900 to-red-600"></div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Contactar al Agente</h3>
                 <div className="flex items-center mb-6">
-                  <img src={property.agent.photo} alt={property.agent.name} className="w-16 h-16 rounded-full border-2 border-gray-200 mr-4" />
+                  <img src={property.agent.photo || 'https://via.placeholder.com/40'} alt={property.agent.name} className="w-16 h-16 rounded-full border-2 border-gray-200 mr-4" />
                   <div>
                     <h4 className="font-bold text-lg text-gray-800">{property.agent.name}</h4>
                     <p className="text-sm text-gray-500">Agente Inmobiliario</p>

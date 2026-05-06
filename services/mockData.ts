@@ -27,7 +27,8 @@ export const MOCK_PROPERTIES: Property[] = [
       name: 'Camila Rodriguez',
       photo: 'https://picsum.photos/100/100?random=10',
       phone: '+54 11 1234 5678'
-    }
+    },
+    status: 'available'
   },
   {
     id: '2',
@@ -54,7 +55,8 @@ export const MOCK_PROPERTIES: Property[] = [
       name: 'Martin Perez',
       photo: 'https://picsum.photos/100/100?random=11',
       phone: '+54 11 8765 4321'
-    }
+    },
+    status: 'available'
   },
   {
     id: '3',
@@ -80,7 +82,8 @@ export const MOCK_PROPERTIES: Property[] = [
       name: 'Sofia Martinez',
       photo: 'https://picsum.photos/100/100?random=12',
       phone: '+54 11 2222 3333'
-    }
+    },
+    status: 'available'
   },
   {
     id: '4',
@@ -107,7 +110,8 @@ export const MOCK_PROPERTIES: Property[] = [
       name: 'Lucas Gomez',
       photo: 'https://picsum.photos/100/100?random=13',
       phone: '+54 11 4444 5555'
-    }
+    },
+    status: 'available'
   },
   {
     id: '5',
@@ -135,7 +139,8 @@ export const MOCK_PROPERTIES: Property[] = [
       name: 'Elena Quintero',
       photo: 'https://picsum.photos/100/100?random=14',
       phone: '+54 11 6666 7777'
-    }
+    },
+    status: 'available'
   },
   {
     id: '6',
@@ -160,7 +165,8 @@ export const MOCK_PROPERTIES: Property[] = [
       name: 'Javier Lopez',
       photo: 'https://picsum.photos/100/100?random=15',
       phone: '+54 11 8888 9999'
-    }
+    },
+    status: 'available'
   }
 ];
 
