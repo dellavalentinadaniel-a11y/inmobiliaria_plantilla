@@ -76,8 +76,8 @@ export const MOCK_PROPERTIES: Property[] = [
       'https://picsum.photos/800/600?random=301',
       'https://picsum.photos/800/600?random=302'
     ],
-    description: 'Oficina lista para entrar, aire acondicionado central, piso técnico y excelente acceso a transporte.',
-    features: ['Seguridad', 'Aire Acondicionado', 'Ascensor'],
+    description: 'Oficina lista para entrar, aire acondicionado central, piso técnico y excelente acceso a transporte. Ideal para consultorio o estudio profesional.',
+    features: ['Seguridad', 'Aire Acondicionado', 'Ascensor', 'Cerca de subte', 'Recepción'],
     agent: {
       name: 'Sofia Martinez',
       photo: 'https://picsum.photos/100/100?random=12',
@@ -159,16 +159,96 @@ export const MOCK_PROPERTIES: Property[] = [
       'https://picsum.photos/800/600?random=6',
       'https://picsum.photos/800/600?random=601'
     ],
-    description: 'Ideal para estudiantes o primera vivienda. Edificio con laundry y SUM.',
-    features: ['SUM', 'Laundry', 'Balcón', 'Bajas Expensas'],
+    description: 'Ideal para estudiantes o primera vivienda. Edificio con laundry, SUM, seguridad y excelente ubicación en Villa Crespo.',
+    features: ['SUM', 'Laundry', 'Balcón', 'Bajas Expensas', 'Seguridad 24hs'],
     agent: {
       name: 'Javier Lopez',
       photo: 'https://picsum.photos/100/100?random=15',
       phone: '+54 11 8888 9999'
     },
     status: 'available'
+  },
+  {
+    id: '7',
+    title: 'Piso Señorial en Recoleta',
+    price: 600000,
+    currency: 'USD',
+    type: 'Apartment',
+    operation: 'Sale',
+    location: 'Recoleta, Buenos Aires',
+    coordinates: { lat: -34.588800, lng: -58.390000 },
+    beds: 4,
+    baths: 3,
+    sqft: 200,
+    imageUrl: 'https://picsum.photos/800/600?random=7',
+    images: [
+      'https://picsum.photos/800/600?random=7',
+      'https://picsum.photos/800/600?random=701',
+      'https://picsum.photos/800/600?random=702'
+    ],
+    description: 'Departamento de categoría con gran recepción, pisos de roble y detalles de época.',
+    features: ['Cochera', 'Seguridad 24hs', 'Dependencia', 'Balcón'],
+    agent: {
+      name: 'Elena Quintero',
+      photo: 'https://picsum.photos/100/100?random=14',
+      phone: '+54 11 6666 7777'
+    },
+    status: 'available'
+  },
+  {
+    id: '8',
+    title: 'Chalet Clásico en Olivos',
+    price: 380000,
+    currency: 'USD',
+    type: 'House',
+    operation: 'Sale',
+    location: 'Olivos, GBA Norte',
+    coordinates: { lat: -34.502000, lng: -58.485000 },
+    beds: 3,
+    baths: 2,
+    sqft: 180,
+    imageUrl: 'https://picsum.photos/800/600?random=8',
+    images: [
+      'https://picsum.photos/800/600?random=8',
+      'https://picsum.photos/800/600?random=801'
+    ],
+    description: 'Casa con jardín arbolado y mucha luz. Excelente ubicación residencial.',
+    features: ['Jardín', 'Parrilla', 'Cochera'],
+    agent: {
+      name: 'Martin Perez',
+      photo: 'https://picsum.photos/100/100?random=11',
+      phone: '+54 11 8765 4321'
+    },
+    status: 'available'
+  },
+  {
+    id: '9',
+    title: 'Departamento ideal pareja',
+    price: 700,
+    currency: 'USD',
+    type: 'Apartment',
+    operation: 'Rent',
+    location: 'Caballito, Buenos Aires',
+    coordinates: { lat: -34.618600, lng: -58.441000 },
+    beds: 2,
+    baths: 1,
+    sqft: 55,
+    imageUrl: 'https://picsum.photos/800/600?random=9',
+    images: [
+      'https://picsum.photos/800/600?random=9',
+      'https://picsum.photos/800/600?random=901'
+    ],
+    description: 'Muy cómodo, cerca de subte Línea A y parque Rivadavia. Edificio con terraza y parrilla de uso común.',
+    features: ['Balcón', 'Cocina equipada', 'Luminoso', 'Terraza', 'Parrilla'],
+    agent: {
+      name: 'Lucas Gomez',
+      photo: 'https://picsum.photos/100/100?random=13',
+      phone: '+54 11 4444 5555'
+    },
+    status: 'available'
   }
 ];
+
 
 export const MOCK_DEVELOPMENTS: Development[] = [
   {
@@ -225,9 +305,13 @@ export const MOCK_AGENTS: Agent[] = [
     role: 'Agente Senior',
     email: 'crodriguez@inmofuture.com',
     phone: '+54 11 1234 5678',
+    whatsapp: '5491112345678',
     photo: 'https://picsum.photos/200/200?random=10',
     location: 'Palermo, CABA',
-    listingsCount: 12
+    listingsCount: 12,
+    description: 'Especialista en propiedades de lujo con más de 10 años de experiencia en el mercado de Palermo.',
+    office: 'InmoFuture Palermo',
+    position: 'Broker Senior'
   },
   {
     id: 'a2',
@@ -235,9 +319,13 @@ export const MOCK_AGENTS: Agent[] = [
     role: 'Líder de Equipo',
     email: 'mperez@inmofuture.com',
     phone: '+54 11 8765 4321',
+    whatsapp: '5491187654321',
     photo: 'https://picsum.photos/200/200?random=11',
     location: 'Tigre, Buenos Aires',
-    listingsCount: 24
+    listingsCount: 24,
+    description: 'Liderando el equipo de zona norte con un enfoque en barrios cerrados y emprendimientos náuticos.',
+    office: 'InmoFuture Norte',
+    position: 'Team Leader'
   },
   {
     id: 'a3',
@@ -245,9 +333,13 @@ export const MOCK_AGENTS: Agent[] = [
     role: 'Agente Inmobiliario',
     email: 'smartinez@inmofuture.com',
     phone: '+54 11 2222 3333',
+    whatsapp: '5491122223333',
     photo: 'https://picsum.photos/200/200?random=12',
     location: 'Centro, CABA',
-    listingsCount: 8
+    listingsCount: 8,
+    description: 'Experta en el área comercial y oficinas corporativas en el centro de la ciudad.',
+    office: 'InmoFuture Puerto Madero',
+    position: 'Consultora Comercial'
   },
   {
     id: 'a4',
@@ -255,9 +347,13 @@ export const MOCK_AGENTS: Agent[] = [
     role: 'Especialista Residencial',
     email: 'lgomez@inmofuture.com',
     phone: '+54 11 4444 5555',
+    whatsapp: '5491144445555',
     photo: 'https://picsum.photos/200/200?random=13',
     location: 'Belgrano, CABA',
-    listingsCount: 15
+    listingsCount: 15,
+    description: 'Dedicado a encontrar el hogar ideal para familias en las mejores zonas residenciales.',
+    office: 'InmoFuture Palermo',
+    position: 'Asesor Residencial'
   },
   {
     id: 'a5',
@@ -265,9 +361,13 @@ export const MOCK_AGENTS: Agent[] = [
     role: 'Agente de Lujo',
     email: 'equintero@inmofuture.com',
     phone: '+54 11 6666 7777',
+    whatsapp: '5491166667777',
     photo: 'https://picsum.photos/200/200?random=14',
     location: 'San Isidro, Buenos Aires',
-    listingsCount: 18
+    listingsCount: 18,
+    description: 'Representando las propiedades más exclusivas de la zona norte con discreción y profesionalismo.',
+    office: 'InmoFuture Norte',
+    position: 'Luxury Specialist'
   },
   {
     id: 'a6',
@@ -277,7 +377,10 @@ export const MOCK_AGENTS: Agent[] = [
     phone: '+54 11 8888 9999',
     photo: 'https://picsum.photos/200/200?random=15',
     location: 'Villa Crespo, CABA',
-    listingsCount: 6
+    listingsCount: 6,
+    description: 'Joven profesional con gran dinamismo y conocimiento en tasaciones urbanas.',
+    office: 'InmoFuture Palermo',
+    position: 'Asesor Junior'
   }
 ];
 

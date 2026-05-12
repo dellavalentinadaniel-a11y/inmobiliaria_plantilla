@@ -11,18 +11,21 @@ import { RentPage } from './components/RentPage';
 import { AboutUs } from './components/AboutUs';
 import { AgentsPage } from './components/AgentsPage';
 import { BlogPage } from './components/BlogPage';
+import { Services } from './components/Services';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import { MOCK_PROPERTIES } from './services/mockData';
-import { getProperties } from './services/dataService';
-import { Property, FilterState, Development } from './types';
-import { MapPin, ArrowRight, Instagram, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { getProperties, getBlogPosts } from './services/dataService';
+import { Property, FilterState, Development, BlogPost } from './types';
+import { MapPin, ArrowRight, Instagram, Facebook, Twitter, Linkedin, Calendar, User as UserIcon } from 'lucide-react';
 import { initFirebase, auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'property' | 'login' | 'buy' | 'rent' | 'about' | 'agents' | 'blog' | 'agent-dashboard'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'property' | 'login' | 'buy' | 'rent' | 'about' | 'agents' | 'blog' | 'agent-dashboard' | 'servicios'>('home');
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -38,9 +41,13 @@ const App: React.FC = () => {
 
     const fetchInitialData = async () => {
       try {
-        const props = await getProperties();
+        const [props, posts] = await Promise.all([
+          getProperties(),
+          getBlogPosts()
+        ]);
         setAllProperties(props);
         setFilteredProperties(props);
+        setBlogPosts(posts);
       } finally {
         setLoading(false);
       }
@@ -121,6 +128,11 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   };
 
+  const handleNavigateServices = () => {
+    setCurrentView('servicios');
+    window.scrollTo(0, 0);
+  };
+
   const handleLoginSuccess = () => {
     setCurrentView('agent-dashboard');
     window.scrollTo(0, 0);
@@ -162,6 +174,7 @@ const App: React.FC = () => {
         onNavigateAbout={handleNavigateAbout}
         onNavigateAgents={handleNavigateAgents}
         onNavigateBlog={handleNavigateBlog}
+        onNavigateServices={handleNavigateServices}
       />
 
       <main className="flex-grow">
@@ -169,6 +182,8 @@ const App: React.FC = () => {
           <>
             <Hero onSearch={handleSearch} />
             
+            <Services />
+
             {/* Featured Section */}
             <div id="listings" className="container mx-auto px-4 py-16">
               <div className="flex flex-col md:flex-row justify-between items-end mb-10">
@@ -230,17 +245,73 @@ const App: React.FC = () => {
             </div>
 
             {/* Banner Section */}
-            <div className="bg-blue-900 py-16 text-white">
-              <div className="container mx-auto px-4 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">¿Querés vender tu propiedad?</h2>
+            <div className="bg-blue-900 py-16 text-white text-center">
+              <div className="container mx-auto px-4">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">¿Buscás una nueva inversión?</h2>
                 <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                  Confía en la red inmobiliaria número 1 del mundo. Tasamos tu propiedad con el mejor valor de mercado.
+                  Te asesoramos para encontrar las mejores oportunidades de desarrollo y renta.
                 </p>
-                <button className="bg-white text-blue-900 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
-                  Contactar un Agente
+                <button 
+                  onClick={handleNavigateServices}
+                  className="bg-white text-blue-900 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
+                >
+                  Ver Servicios
                 </button>
               </div>
             </div>
+
+            {/* Novedades Section */}
+            <section className="py-20 bg-gray-50">
+              <div className="container mx-auto px-4">
+                <div className="flex justify-between items-end mb-12">
+                  <div>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Novedades e Información</h2>
+                    <p className="text-gray-500">Mantenete al tanto del mercado inmobiliario y consejos útiles.</p>
+                  </div>
+                  <button 
+                    onClick={handleNavigateBlog}
+                    className="hidden md:flex items-center text-blue-900 font-bold hover:underline"
+                  >
+                    Ver todas las noticias <ArrowRight className="w-5 h-5 ml-2" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {blogPosts.slice(0, 3).map(post => (
+                    <article key={post.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow group flex flex-col h-full">
+                      <div className="relative overflow-hidden h-48">
+                        <img 
+                          src={post.imageUrl} 
+                          alt={post.title} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                          {post.category}
+                        </div>
+                      </div>
+                      <div className="p-6 flex flex-col flex-grow">
+                        <div className="flex items-center text-xs text-gray-400 mb-3 space-x-4">
+                          <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> {post.date}</span>
+                          <span className="flex items-center"><UserIcon className="w-3 h-3 mr-1" /> {post.author}</span>
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-900 transition-colors">
+                          {post.title}
+                        </h3>
+                        <p className="text-gray-500 text-sm line-clamp-3 mb-6">
+                          {post.excerpt}
+                        </p>
+                        <button 
+                          onClick={handleNavigateBlog}
+                          className="mt-auto text-blue-900 font-bold text-sm flex items-center hover:underline"
+                        >
+                          Leer más <ArrowRight className="w-4 h-4 ml-1" />
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
           </>
         )}
 
@@ -249,6 +320,10 @@ const App: React.FC = () => {
             property={selectedProperty} 
             onBack={handleBackToHome} 
           />
+        )}
+
+        {currentView === 'servicios' && (
+          <Services />
         )}
 
         {currentView === 'login' && (
@@ -334,6 +409,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
+      <WhatsAppButton />
       <ChatWidget />
     </div>
   );

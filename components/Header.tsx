@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, User, Heart, Search } from 'lucide-react';
+import { Menu, X, User, Search } from 'lucide-react';
 
 interface HeaderProps {
   onNavigateHome: () => void;
@@ -9,6 +9,7 @@ interface HeaderProps {
   onNavigateAbout: () => void;
   onNavigateAgents: () => void;
   onNavigateBlog: () => void;
+  onNavigateServices: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
@@ -18,7 +19,8 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateRent, 
   onNavigateAbout,
   onNavigateAgents,
-  onNavigateBlog
+  onNavigateBlog,
+  onNavigateServices
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -35,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex space-x-6 items-center text-gray-600 font-medium text-xs lg:text-sm">
+          <nav className="hidden md:flex space-x-4 lg:space-x-6 items-center text-gray-600 font-medium text-[10px] lg:text-xs xl:text-sm">
             <a 
               href="#" 
               onClick={(e) => { e.preventDefault(); onNavigateBuy(); }} 
@@ -49,6 +51,13 @@ export const Header: React.FC<HeaderProps> = ({
               className="hover:text-blue-700 transition-colors"
             >
               ALQUILAR
+            </a>
+            <a 
+              href="#" 
+              onClick={(e) => { e.preventDefault(); onNavigateServices(); }} 
+              className="hover:text-blue-700 transition-colors"
+            >
+              SERVICIOS
             </a>
             <a 
               href="#" 
@@ -75,10 +84,6 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Icons */}
           <div className="hidden md:flex items-center space-x-6">
-            <button className="flex items-center text-gray-600 hover:text-blue-700">
-              <Heart className="w-5 h-5 mr-1" />
-              <span className="text-sm">Favoritos</span>
-            </button>
             <button 
               onClick={onNavigateLogin}
               className="flex items-center text-gray-600 hover:text-blue-700"
@@ -116,6 +121,13 @@ export const Header: React.FC<HeaderProps> = ({
               Alquilar
             </a>
             <a 
+              href="#" 
+              onClick={() => { onNavigateServices(); setIsMenuOpen(false); }} 
+              className="block hover:text-blue-700"
+            >
+              Servicios
+            </a>
+            <a 
                href="#" 
                onClick={() => { onNavigateAbout(); setIsMenuOpen(false); }} 
                className="block hover:text-blue-700"
@@ -137,7 +149,6 @@ export const Header: React.FC<HeaderProps> = ({
                Blog
             </a>
             <hr className="border-gray-200" />
-            <a href="#" className="flex items-center hover:text-blue-700"><Heart className="w-4 h-4 mr-2"/> Favoritos</a>
             <a 
               href="#" 
               onClick={() => { onNavigateLogin(); setIsMenuOpen(false); }}

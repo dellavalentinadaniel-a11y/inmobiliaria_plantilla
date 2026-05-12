@@ -1,3 +1,9 @@
+export interface Contract {
+  startDate: string;
+  endDate: string;
+  increaseIntervalMonths: number;
+}
+
 export interface Property {
   id: string;
   title: string;
@@ -23,6 +29,7 @@ export interface Property {
     phone: string;
   };
   status: 'available' | 'sold' | 'rented';
+  contract?: Contract;
 }
 
 export interface Development {
@@ -47,12 +54,17 @@ export interface Development {
 export interface Agent {
   id: string;
   name: string;
-  role: string;
+  role: string; // This can be "Position" but keeping it for compatibility
   email: string;
   phone: string;
+  whatsapp?: string;
   photo: string;
   location: string;
   listingsCount: number;
+  description?: string;
+  office?: string;
+  position?: string;
+  website?: string;
 }
 
 export interface Office {

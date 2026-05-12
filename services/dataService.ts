@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { MOCK_PROPERTIES, MOCK_DEVELOPMENTS, MOCK_AGENTS, MOCK_OFFICES, MOCK_BLOG_POSTS } from './mockData';
 import { Property, Development, Agent, Office, BlogPost } from '../types';
@@ -95,6 +95,27 @@ export const updateProperty = async (propertyId: string, updates: Partial<Proper
     const propertyIndex = MOCK_PROPERTIES.findIndex(p => p.id === propertyId);
     if (propertyIndex !== -1) {
       MOCK_PROPERTIES[propertyIndex] = { ...MOCK_PROPERTIES[propertyIndex], ...updates };
+      return true;
+    }
+    return false;
+  }
+};
+
+export const deleteProperty = async (propertyId: string): Promise<boolean> => {
+  if (USE_FIRESTORE && db) {
+    try {
+      const docRef = doc(collection(db, 'properties'), propertyId);
+      await deleteDoc(docRef);
+      return true;
+    } catch (error) {
+      console.error('Error deleting property in Firestore:', error);
+      return false;
+    }
+  } else {
+    // For mock data
+    const propertyIndex = MOCK_PROPERTIES.findIndex(p => p.id === propertyId);
+    if (propertyIndex !== -1) {
+      MOCK_PROPERTIES.splice(propertyIndex, 1);
       return true;
     }
     return false;
