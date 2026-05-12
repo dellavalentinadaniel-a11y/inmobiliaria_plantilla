@@ -12,6 +12,9 @@ import { AboutUs } from './components/AboutUs';
 import { AgentsPage } from './components/AgentsPage';
 import { BlogPage } from './components/BlogPage';
 import { Services } from './components/Services';
+import { MortgageCalculator } from './components/MortgageCalculator';
+import { Testimonials } from './components/Testimonials';
+import { Newsletter } from './components/Newsletter';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { MOCK_PROPERTIES } from './services/mockData';
 import { getProperties, getBlogPosts } from './services/dataService';
@@ -184,25 +187,36 @@ const App: React.FC = () => {
             
             <Services />
 
+            <MortgageCalculator />
+
             {/* Featured Section */}
-            <div id="listings" className="container mx-auto px-4 py-16">
-              <div className="flex flex-col md:flex-row justify-between items-end mb-10">
+            <div id="listings" className="container mx-auto px-4 py-24">
+              <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-2">Propiedades Destacadas</h2>
-                  <p className="text-gray-500 text-lg">Las mejores oportunidades del mercado seleccionadas para vos.</p>
+                  <span className="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-4 block">Selección Exclusiva</span>
+                  <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight mb-4">Propiedades Destacadas</h2>
+                  <p className="text-gray-500 text-lg max-w-xl">Las mejores oportunidades del mercado seleccionadas para vos por nuestros expertos.</p>
                 </div>
-                <div className="flex gap-4 mt-4 md:mt-0">
+                
+                {/* Visual quick filters */}
+                <div className="bg-white p-2 rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 flex flex-wrap gap-2">
                   <button 
-                    onClick={handleNavigateRent}
-                    className="hidden md:flex items-center text-gray-600 font-bold hover:text-blue-900 transition-colors"
+                    onClick={() => handleSearch({})} 
+                    className="px-6 py-3 bg-gray-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all"
                   >
-                    Ver Alquileres <ArrowRight className="w-5 h-5 ml-2" />
+                    Todos
                   </button>
                   <button 
-                    onClick={handleNavigateBuy}
-                    className="hidden md:flex items-center text-blue-900 font-bold hover:text-blue-700 transition-colors"
+                    onClick={() => handleSearch({ operation: 'Sale' })} 
+                    className="px-6 py-3 bg-gray-50 text-gray-600 border border-gray-100 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white hover:text-red-600 transition-all"
                   >
-                    Ver Ventas <ArrowRight className="w-5 h-5 ml-2" />
+                    Venta
+                  </button>
+                  <button 
+                    onClick={() => handleSearch({ operation: 'Rent' })} 
+                    className="px-6 py-3 bg-gray-50 text-gray-600 border border-gray-100 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white hover:text-red-600 transition-all"
+                  >
+                    Alquiler
                   </button>
                 </div>
               </div>
@@ -244,21 +258,7 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Banner Section */}
-            <div className="bg-blue-900 py-16 text-white text-center">
-              <div className="container mx-auto px-4">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">¿Buscás una nueva inversión?</h2>
-                <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                  Te asesoramos para encontrar las mejores oportunidades de desarrollo y renta.
-                </p>
-                <button 
-                  onClick={handleNavigateServices}
-                  className="bg-white text-blue-900 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
-                >
-                  Ver Servicios
-                </button>
-              </div>
-            </div>
+            <Testimonials />
 
             {/* Novedades Section */}
             <section className="py-20 bg-gray-50">
@@ -312,6 +312,8 @@ const App: React.FC = () => {
                 </div>
               </div>
             </section>
+
+            <Newsletter />
           </>
         )}
 
