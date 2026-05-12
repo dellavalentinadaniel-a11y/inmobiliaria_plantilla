@@ -51,6 +51,18 @@ export interface Development {
   features: string[];
 }
 
+export interface VisibilitySettings {
+  name: boolean;
+  photo: boolean;
+  position: boolean;
+  profession: boolean;
+  description: boolean;
+  email: boolean;
+  phone: boolean;
+  whatsapp: boolean;
+  website: boolean;
+}
+
 export interface Agent {
   id: string;
   name: string;
@@ -64,7 +76,9 @@ export interface Agent {
   description?: string;
   office?: string;
   position?: string;
+  profession?: string;
   website?: string;
+  visibilitySettings?: VisibilitySettings;
 }
 
 export interface Office {

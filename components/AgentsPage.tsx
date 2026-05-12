@@ -121,19 +121,36 @@ export const AgentsPage: React.FC = () => {
                   {/* Content */}
                   <div className="flex-grow flex flex-col">
                     <div className="mb-4">
-                      <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-1 block">
-                        {agent.position || 'Agente Inmobiliario'}
-                      </span>
-                      <h3 className="text-2xl font-black text-gray-900 mb-1 group-hover:text-red-600 transition-colors">{agent.name}</h3>
+                      {(!agent.visibilitySettings || agent.visibilitySettings.position) && (
+                        <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-1 block">
+                          {agent.position || 'Agente Inmobiliario'}
+                        </span>
+                      )}
+                      
+                      {(!agent.visibilitySettings || agent.visibilitySettings.name) && (
+                        <h3 className="text-2xl font-black text-gray-900 mb-1 group-hover:text-red-600 transition-colors">
+                          {agent.name}
+                        </h3>
+                      )}
+
+                      {(!agent.visibilitySettings || agent.visibilitySettings.profession) && agent.profession && (
+                        <div className="flex items-center text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">
+                          <Briefcase className="w-3 h-3 mr-2 text-gray-300" />
+                          {agent.profession}
+                        </div>
+                      )}
+
                       <div className="flex items-center text-gray-500 text-sm font-semibold">
                         <Building2 className="w-4 h-4 mr-2 text-gray-300" />
                         {agent.office || 'Agencia Central'}
                       </div>
                     </div>
 
-                    <p className="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-3">
-                      {agent.description || 'Profesional dedicado con amplia trayectoria en el sector, brindando soluciones integrales y personalizadas para cada cliente.'}
-                    </p>
+                    {(!agent.visibilitySettings || agent.visibilitySettings.description) && (
+                      <p className="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-3">
+                        {agent.description || 'Profesional dedicado con amplia trayectoria en el sector, brindando soluciones integrales y personalizadas para cada cliente.'}
+                      </p>
+                    )}
 
                     <div className="grid grid-cols-2 gap-4 mb-8">
                       <div className="flex items-center space-x-3 text-sm font-bold text-gray-700">
@@ -152,24 +169,35 @@ export const AgentsPage: React.FC = () => {
 
                     <div className="mt-auto flex items-center justify-between pt-6 border-t border-gray-300">
                       <div className="flex items-center space-x-4">
-                        <a href={`tel:${agent.phone}`} className="w-10 h-10 bg-white text-gray-700 rounded-full flex items-center justify-center border border-gray-200 hover:bg-red-50 hover:text-red-600 transition-all shadow-sm" title="Llamar">
-                          <Phone className="w-4 h-4" />
-                        </a>
-                        <a href={agent.website ? (agent.website.startsWith('http') ? agent.website : `https://${agent.website}`) : '#'} target="_blank" rel="noreferrer" className="w-10 h-10 bg-white text-blue-600 rounded-full flex items-center justify-center border border-gray-200 hover:bg-blue-50 transition-all shadow-sm" title="Visitar Web">
-                          <Globe className="w-4 h-4" />
-                        </a>
-                        <a href={`mailto:${agent.email}`} className="w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center border-2 border-white hover:bg-red-600 transition-all shadow-sm" title="Enviar Email">
-                          <Mail className="w-4 h-4" />
-                        </a>
-                        <a 
-                          href={`https://wa.me/${agent.whatsapp || '5492995504783'}`} 
-                          target="_blank" 
-                          rel="noreferrer"
-                          className="w-10 h-10 bg-[#25D366] text-white rounded-full flex items-center justify-center border border-gray-200 hover:bg-[#128C7E] transition-all shadow-sm" 
-                          title="WhatsApp"
-                        >
-                          <MessageCircle className="w-4 h-4" />
-                        </a>
+                        {(!agent.visibilitySettings || agent.visibilitySettings.phone) && (
+                          <a href={`tel:${agent.phone}`} className="w-10 h-10 bg-white text-gray-700 rounded-full flex items-center justify-center border border-gray-200 hover:bg-red-50 hover:text-red-600 transition-all shadow-sm" title="Llamar">
+                            <Phone className="w-4 h-4" />
+                          </a>
+                        )}
+                        
+                        {(!agent.visibilitySettings || agent.visibilitySettings.website) && (
+                          <a href={agent.website ? (agent.website.startsWith('http') ? agent.website : `https://${agent.website}`) : '#'} target="_blank" rel="noreferrer" className="w-10 h-10 bg-white text-blue-600 rounded-full flex items-center justify-center border border-gray-200 hover:bg-blue-50 transition-all shadow-sm" title="Visitar Web">
+                            <Globe className="w-4 h-4" />
+                          </a>
+                        )}
+
+                        {(!agent.visibilitySettings || agent.visibilitySettings.email) && (
+                          <a href={`mailto:${agent.email}`} className="w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center border-2 border-white hover:bg-red-600 transition-all shadow-sm" title="Enviar Email">
+                            <Mail className="w-4 h-4" />
+                          </a>
+                        )}
+
+                        {(!agent.visibilitySettings || agent.visibilitySettings.whatsapp) && (
+                          <a 
+                            href={`https://wa.me/${agent.whatsapp || '5492995504783'}`} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="w-10 h-10 bg-[#25D366] text-white rounded-full flex items-center justify-center border border-gray-200 hover:bg-[#128C7E] transition-all shadow-sm" 
+                            title="WhatsApp"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                          </a>
+                        )}
                       </div>
                       
                       <button className="flex items-center space-x-2 px-6 py-3 bg-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-red-600 hover:-translate-y-1 transition-all shadow-xl shadow-gray-200">

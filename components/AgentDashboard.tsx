@@ -23,10 +23,16 @@ import {
   Edit,
   FileText,
   X,
-  Mail
+  Mail,
+  Eye,
+  EyeOff,
+  User,
+  Phone,
+  Globe,
+  MessageCircle
 } from 'lucide-react';
-import { addProperty, getProperties, updateProperty, deleteProperty } from '../services/dataService';
-import { Property, Contract } from '../types';
+import { addProperty, getProperties, updateProperty, deleteProperty, updateAgent, getAgents } from '../services/dataService';
+import { Property, Contract, Agent, VisibilitySettings } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 
 type Tab = 'overview' | 'sales' | 'rentals' | 'messages' | 'emailMarketing' | 'settings';
@@ -42,6 +48,9 @@ export const AgentDashboard: React.FC = () => {
     endDate: '',
     increaseIntervalMonths: 6
   });
+
+  const [currentAgent, setCurrentAgent] = useState<Agent | null>(null);
+  const [profileForm, setProfileForm] = useState<Partial<Agent>>({});
 
   const [newProperty, setNewProperty] = useState({
     title: '',
@@ -71,8 +80,68 @@ export const AgentDashboard: React.FC = () => {
       setActiveProperties(props);
       updateStats(props);
     };
+
+    const fetchAgentData = async () => {
+      const agents = await getAgents();
+      // Mocking current user as the first agent ('a1')
+      const agent = agents.find(a => a.id === 'a1') || agents[0];
+      setCurrentAgent(agent);
+      setProfileForm({
+        ...agent,
+        visibilitySettings: agent.visibilitySettings || {
+          name: true,
+          photo: true,
+          position: true,
+          profession: true,
+          description: true,
+          email: true,
+          phone: true,
+          whatsapp: true,
+          website: true
+        }
+      });
+    };
+
     fetchProps();
+    fetchAgentData();
   }, []);
+
+  const handleProfileChange = (field: keyof Agent, value: any) => {
+    setProfileForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleVisibilityToggle = (field: keyof VisibilitySettings) => {
+    setProfileForm(prev => {
+      if (!prev.visibilitySettings) return prev;
+      return {
+        ...prev,
+        visibilitySettings: {
+          ...prev.visibilitySettings,
+          [field]: !prev.visibilitySettings[field]
+        }
+      };
+    });
+  };
+
+  const handleSaveProfile = async () => {
+    if (!currentAgent) return;
+    const success = await updateAgent(currentAgent.id, profileForm);
+    if (success) {
+      setCurrentAgent({ ...currentAgent, ...profileForm } as Agent);
+      alert('Perfil actualizado con éxito');
+    }
+  };
+
+  const handleProfilePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleProfileChange('photo', reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const updateStats = (props: Property[]) => {
     const available = props.filter(p => p.status === 'available').length;
@@ -299,12 +368,12 @@ export const AgentDashboard: React.FC = () => {
         <div className="p-6 border-t border-gray-50 bg-gray-50/50">
           <div className="flex items-center space-x-4 mb-6">
             <div className="relative">
-              <img src="https://picsum.photos/100/100?random=agent" alt="Agent" className="w-12 h-12 rounded-2xl object-cover ring-2 ring-white shadow-md" />
+              <img src={currentAgent?.photo || "https://picsum.photos/100/100?random=agent"} alt="Agent" className="w-12 h-12 rounded-2xl object-cover ring-2 ring-white shadow-md" />
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
             </div>
             <div>
-              <p className="text-sm font-bold text-gray-900">Agente Roos</p>
-              <p className="text-xs text-gray-500 font-medium">Agente Senior</p>
+              <p className="text-sm font-bold text-gray-900">{currentAgent?.name || "Cargando..."}</p>
+              <p className="text-xs text-gray-500 font-medium">{currentAgent?.role || "Agente Senior"}</p>
             </div>
           </div>
           <button className="w-full flex items-center justify-center space-x-2 p-3 text-red-600 font-bold hover:bg-red-100 rounded-xl transition-colors">
@@ -952,38 +1021,138 @@ export const AgentDashboard: React.FC = () => {
                 key="settings"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="max-w-2xl mx-auto space-y-8"
+                className="max-w-4xl mx-auto space-y-8"
               >
                 <div className="text-center mb-10">
                   <div className="relative inline-block group">
-                    <img src="https://picsum.photos/200/200?random=agent" alt="" className="w-32 h-32 rounded-[2rem] object-cover shadow-2xl ring-4 ring-white" />
-                    <button className="absolute bottom-0 right-0 p-3 bg-red-600 rounded-2xl text-white shadow-xl hover:scale-110 transition-transform">
-                      <Camera className="w-5 h-5" />
-                    </button>
+                    <img 
+                      src={profileForm.photo || "https://picsum.photos/200/200?random=agent"} 
+                      alt="" 
+                      className="w-40 h-40 rounded-[3rem] object-cover shadow-2xl ring-4 ring-white" 
+                    />
+                    <label className="absolute bottom-0 right-0 p-4 bg-red-600 rounded-2xl text-white shadow-xl hover:scale-110 transition-transform cursor-pointer">
+                      <Camera className="w-6 h-6" />
+                      <input type="file" className="hidden" accept="image/*" onChange={handleProfilePhotoChange} />
+                    </label>
                   </div>
-                  <h2 className="text-2xl font-black text-gray-900 mt-6 tracking-tight">Configuración de Perfil</h2>
-                  <p className="text-gray-500">Actualizá tu información y preferencias personales.</p>
+                  <h2 className="text-3xl font-black text-gray-900 mt-8 tracking-tight">Configuración de Perfil</h2>
+                  <p className="text-gray-500 font-medium">Gestioná tu marca personal y preferencias de privacidad.</p>
                 </div>
 
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 space-y-6">
-                  <div className="space-y-4">
+                <div className="bg-white rounded-[3rem] shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="p-10 bg-gray-50/50 border-b border-gray-100 flex items-center justify-between">
                     <div>
-                      <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Nombre Completo</label>
-                      <input type="text" defaultValue="Agente Roos" className="w-full p-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-200 transition-all font-bold outline-none" />
+                      <h3 className="text-xl font-bold text-gray-900">Datos Personales</h3>
+                      <p className="text-xs text-gray-500 mt-1 uppercase tracking-widest font-black">Información que verán tus clientes</p>
                     </div>
-                    <div>
-                      <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Email Profesional</label>
-                      <input type="email" defaultValue="agente@roos.com" className="w-full p-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-200 transition-all font-bold outline-none" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Teléfono</label>
-                      <input type="text" defaultValue="+54 11 6666 7777" className="w-full p-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-200 transition-all font-bold outline-none" />
+                    <div className="flex items-center space-x-2 text-xs font-bold text-gray-400">
+                      <Eye className="w-4 h-4" />
+                      <span>Visibilidad de campos</span>
                     </div>
                   </div>
-                  <div className="pt-6">
-                    <button className="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-red-200 hover:bg-red-700 hover:shadow-2xl transition-all uppercase tracking-widest">
-                      Guardar Cambios
-                    </button>
+
+                  <div className="p-10 space-y-10">
+                    {/* Render Form Fields */}
+                    {[
+                      { id: 'name', label: 'Nombre y Apellido', icon: User, type: 'text' },
+                      { id: 'position', label: 'Puesto / Cargo', icon: Briefcase, type: 'text' },
+                      { id: 'profession', label: 'Profesión / Oficio', icon: FileText, type: 'text' },
+                      { id: 'email', label: 'E-mail Profesional', icon: Mail, type: 'email' },
+                      { id: 'phone', label: 'Número de Teléfono', icon: Phone, type: 'text' },
+                      { id: 'whatsapp', label: 'Número de WhatsApp', icon: MessageCircle, type: 'text' },
+                      { id: 'website', label: 'Sitio Web', icon: Globe, type: 'text' },
+                    ].map((field) => (
+                      <div key={field.id} className="group">
+                        <div className="flex items-center justify-between mb-3 px-1">
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{field.label}</label>
+                          <button 
+                            onClick={() => handleVisibilityToggle(field.id as keyof VisibilitySettings)}
+                            className={`flex items-center space-x-2 px-3 py-1.5 rounded-full transition-all ${
+                              profileForm.visibilitySettings?.[field.id as keyof VisibilitySettings] 
+                                ? 'bg-green-50 text-green-600' 
+                                : 'bg-gray-100 text-gray-400'
+                            }`}
+                          >
+                            {profileForm.visibilitySettings?.[field.id as keyof VisibilitySettings] ? (
+                              <>
+                                <Eye className="w-3 h-3" />
+                                <span className="text-[10px] font-bold">Visible</span>
+                              </>
+                            ) : (
+                              <>
+                                <EyeOff className="w-3 h-3" />
+                                <span className="text-[10px] font-bold">Oculto</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <div className="relative">
+                          <field.icon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-red-500 transition-colors" />
+                          <input 
+                            type={field.type}
+                            value={(profileForm as any)[field.id] || ''}
+                            onChange={(e) => handleProfileChange(field.id as keyof Agent, e.target.value)}
+                            className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-200 transition-all font-bold outline-none" 
+                          />
+                        </div>
+                      </div>
+                    ))}
+
+                    <div>
+                      <div className="flex items-center justify-between mb-3 px-1">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Descripción / Bio</label>
+                        <button 
+                            onClick={() => handleVisibilityToggle('description')}
+                            className={`flex items-center space-x-2 px-3 py-1.5 rounded-full transition-all ${
+                              profileForm.visibilitySettings?.description
+                                ? 'bg-green-50 text-green-600' 
+                                : 'bg-gray-100 text-gray-400'
+                            }`}
+                          >
+                            {profileForm.visibilitySettings?.description ? (
+                              <>
+                                <Eye className="w-3 h-3" />
+                                <span className="text-[10px] font-bold">Visible</span>
+                              </>
+                            ) : (
+                              <>
+                                <EyeOff className="w-3 h-3" />
+                                <span className="text-[10px] font-bold">Oculto</span>
+                              </>
+                            )}
+                          </button>
+                      </div>
+                      <textarea 
+                        rows={5}
+                        value={profileForm.description || ''}
+                        onChange={(e) => handleProfileChange('description', e.target.value)}
+                        className="w-full p-6 bg-gray-50 border border-transparent rounded-3xl focus:bg-white focus:ring-2 focus:ring-red-100 transition-all font-medium outline-none resize-none"
+                      />
+                    </div>
+
+                    <div className="pt-6 border-t border-gray-50 flex flex-col sm:flex-row gap-4">
+                      <button 
+                        onClick={handleSaveProfile}
+                        className="flex-grow bg-gray-900 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-black hover:-translate-y-1 transition-all uppercase tracking-widest text-sm"
+                      >
+                        Guardar Perfil
+                      </button>
+                      <button className="px-8 py-5 text-red-600 font-bold hover:bg-red-50 rounded-2xl transition-all uppercase tracking-widest text-sm">
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-red-50 rounded-[3rem] p-10 flex items-start space-x-6 border border-red-100">
+                  <div className="p-4 bg-white rounded-2xl text-red-600 shadow-sm">
+                    <AlertCircle className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-gray-900 mb-2">Consejo de Seguridad</h4>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Recordá que los datos que marques como <span className="text-red-600 font-bold">Visibles</span> serán públicos en el listado de agentes. Te recomendamos mantener tu WhatsApp y Email laborales siempre activos para no perder prospectos.
+                    </p>
                   </div>
                 </div>
               </motion.div>

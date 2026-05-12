@@ -121,3 +121,24 @@ export const deleteProperty = async (propertyId: string): Promise<boolean> => {
     return false;
   }
 };
+
+export const updateAgent = async (agentId: string, updates: Partial<Agent>): Promise<boolean> => {
+  if (USE_FIRESTORE && db) {
+    try {
+      const docRef = doc(collection(db, 'agents'), agentId);
+      await updateDoc(docRef, updates);
+      return true;
+    } catch (error) {
+      console.error('Error updating agent in Firestore:', error);
+      return false;
+    }
+  } else {
+    // For mock data
+    const agentIndex = MOCK_AGENTS.findIndex(a => a.id === agentId);
+    if (agentIndex !== -1) {
+      MOCK_AGENTS[agentIndex] = { ...MOCK_AGENTS[agentIndex], ...updates };
+      return true;
+    }
+    return false;
+  }
+};

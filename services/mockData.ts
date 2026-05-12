@@ -311,7 +311,9 @@ export const MOCK_AGENTS: Agent[] = [
     listingsCount: 12,
     description: 'Especialista en propiedades de lujo con más de 10 años de experiencia en el mercado de Palermo.',
     office: 'InmoFuture Palermo',
-    position: 'Broker Senior'
+    position: 'Broker Senior',
+    profession: 'Abogada',
+    visibilitySettings: { name: true, photo: true, position: true, profession: true, description: true, email: true, phone: true, whatsapp: true, website: true }
   },
   {
     id: 'a2',
@@ -325,7 +327,9 @@ export const MOCK_AGENTS: Agent[] = [
     listingsCount: 24,
     description: 'Liderando el equipo de zona norte con un enfoque en barrios cerrados y emprendimientos náuticos.',
     office: 'InmoFuture Norte',
-    position: 'Team Leader'
+    position: 'Team Leader',
+    profession: 'Arquitecto',
+    visibilitySettings: { name: true, photo: true, position: true, profession: true, description: true, email: true, phone: true, whatsapp: true, website: true }
   },
   {
     id: 'a3',
@@ -339,7 +343,9 @@ export const MOCK_AGENTS: Agent[] = [
     listingsCount: 8,
     description: 'Experta en el área comercial y oficinas corporativas en el centro de la ciudad.',
     office: 'InmoFuture Puerto Madero',
-    position: 'Consultora Comercial'
+    position: 'Consultora Comercial',
+    profession: 'Contadora',
+    visibilitySettings: { name: true, photo: true, position: true, profession: true, description: true, email: true, phone: true, whatsapp: true, website: true }
   },
   {
     id: 'a4',
@@ -353,7 +359,9 @@ export const MOCK_AGENTS: Agent[] = [
     listingsCount: 15,
     description: 'Dedicado a encontrar el hogar ideal para familias en las mejores zonas residenciales.',
     office: 'InmoFuture Palermo',
-    position: 'Asesor Residencial'
+    position: 'Asesor Residencial',
+    profession: 'Martillero Público',
+    visibilitySettings: { name: true, photo: true, position: true, profession: true, description: true, email: true, phone: true, whatsapp: true, website: true }
   },
   {
     id: 'a5',
@@ -367,7 +375,9 @@ export const MOCK_AGENTS: Agent[] = [
     listingsCount: 18,
     description: 'Representando las propiedades más exclusivas de la zona norte con discreción y profesionalismo.',
     office: 'InmoFuture Norte',
-    position: 'Luxury Specialist'
+    position: 'Luxury Specialist',
+    profession: 'Lic. en Relaciones Públicas',
+    visibilitySettings: { name: true, photo: true, position: true, profession: true, description: true, email: true, phone: true, whatsapp: true, website: true }
   },
   {
     id: 'a6',
@@ -380,7 +390,9 @@ export const MOCK_AGENTS: Agent[] = [
     listingsCount: 6,
     description: 'Joven profesional con gran dinamismo y conocimiento en tasaciones urbanas.',
     office: 'InmoFuture Palermo',
-    position: 'Asesor Junior'
+    position: 'Asesor Junior',
+    profession: 'Estudiante de Arquitectura',
+    visibilitySettings: { name: true, photo: true, position: true, profession: true, description: true, email: true, phone: true, whatsapp: true, website: true }
   }
 ];
 
